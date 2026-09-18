@@ -110,8 +110,20 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 var pageLoading = document.querySelector("#zyyo-loading");
-window.addEventListener('load', function() {
-    setTimeout(function () {
+
+// DOM 就绪即淡出加载页，不等待全部资源下载完成；1.5s 兜底防止极端情况下卡在加载页
+function hideLoading() {
+    if (pageLoading) {
         pageLoading.style.opacity = '0';
-    }, 100);
-});
+    }
+}
+
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', function () {
+        setTimeout(hideLoading, 100);
+    });
+} else {
+    setTimeout(hideLoading, 100);
+}
+
+setTimeout(hideLoading, 1500);

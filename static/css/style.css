@@ -9,7 +9,8 @@
 @font-face {
     font-family: "b";
 
-    src: url(../fonts/Ubuntu-Regular.ttf);
+    src: url(../fonts/Ubuntu-Regular.woff2) format("woff2"),
+         url(../fonts/Ubuntu-Regular.ttf) format("truetype");
     font-display: swap;
 }
 
@@ -110,6 +111,7 @@ body {
     top: 0px;
     pointer-events: none;
     opacity: 1;
+    transition: opacity 0.4s ease;
     display: flex;
     justify-content: center;
     align-items: center;
