@@ -127,3 +127,85 @@ if (document.readyState === 'loading') {
 }
 
 setTimeout(hideLoading, 1500);
+
+// 光点粒子层：与壁纸的光效呼应。约束——
+//   prefers-reduced-motion 时整个层不创建；页面隐藏即暂停；
+//   DPR 上限 1.5、数量随视口宽度封顶 42，保证低端机开销可忽略
+(function () {
+    if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        return;
+    }
+    var canvas = document.createElement('canvas');
+    canvas.id = 'bg-particles';
+    canvas.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;z-index:-99999998;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+
+    var ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    var dpr = Math.min(window.devicePixelRatio || 1, 1.5);
+    var motes = [];
+    var COUNT = Math.min(42, Math.max(18, Math.floor(window.innerWidth / 32)));
+    var raf = 0;
+    var running = true;
+
+    function resize() {
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+    }
+
+    function spawn(fromBottom) {
+        return {
+            x: Math.random() * canvas.width,
+            y: fromBottom ? canvas.height + 24 * dpr : Math.random() * canvas.height,
+            r: (1 + Math.random() * 2.2) * dpr,
+            vy: (0.15 + Math.random() * 0.45) * dpr,
+            vx: (Math.random() - 0.5) * 0.12 * dpr,
+            a: 0.15 + Math.random() * 0.5,
+            tw: Math.random() * Math.PI * 2
+        };
+    }
+
+    resize();
+    for (var i = 0; i < COUNT; i++) {
+        motes.push(spawn(false));
+    }
+
+    function frame() {
+        if (!running) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        for (var i = 0; i < motes.length; i++) {
+            var m = motes[i];
+            m.y -= m.vy;
+            m.x += m.vx;
+            m.tw += 0.03;
+            if (m.y < -24 * dpr || m.x < -24 * dpr || m.x > canvas.width + 24 * dpr) {
+                motes[i] = spawn(true);
+                continue;
+            }
+            var alpha = m.a * (0.6 + 0.4 * Math.sin(m.tw));
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(190, 220, 255, ' + alpha.toFixed(3) + ')';
+            ctx.arc(m.x, m.y, m.r, 0, 6.283);
+            ctx.fill();
+        }
+        raf = requestAnimationFrame(frame);
+    }
+
+    document.addEventListener('visibilitychange', function () {
+        running = !document.hidden;
+        if (running) {
+            raf = requestAnimationFrame(frame);
+        } else {
+            cancelAnimationFrame(raf);
+        }
+    });
+
+    window.addEventListener('resize', resize);
+    // 兜底：个别环境首次布局时 innerWidth 可能为 0，load 后再校准一次
+    window.addEventListener('load', resize);
+
+    raf = requestAnimationFrame(frame);
+    // 直接同步淡入，不依赖 rAF（后台标签页 rAF 会被冻结，导致迟迟不显示）
+    canvas.classList.add('on');
+})();

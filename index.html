@@ -19,6 +19,8 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="./static/css/style.css">
 	<link rel="stylesheet" href="./static/css/root.css">
+	<link rel="preload" as="image" href="./static/img/background.webp">
+	<link rel="preload" as="font" type="font/woff2" href="./static/fonts/Ubuntu-Regular.woff2" crossorigin>
 	<script type="application/ld+json">
 	{
 		"@context": "https://schema.org",
@@ -236,7 +238,11 @@
 
 
 
-<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js"></script>
-<script>LA.init({ id: "KFqltKSkJgQTGD9l", ck: "KFqltKSkJgQTGD9l" })</script>
+<script charset="UTF-8" id="LA_COLLECT" src="//sdk.51.la/js-sdk-pro.min.js" defer></script>
+<script>
+	document.getElementById('LA_COLLECT').addEventListener('load', function () {
+		LA.init({ id: "KFqltKSkJgQTGD9l", ck: "KFqltKSkJgQTGD9l" });
+	});
+</script>
 
 </html>

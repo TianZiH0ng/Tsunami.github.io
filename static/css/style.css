@@ -878,3 +878,46 @@ footer {
 .onoffswitch-checkbox:checked+.onoffswitch-label .onoffswitch-switch {
     right: 50%;
 }
+
+/* 动态壁纸：ken-burns 慢推拉。只动 transform（合成器线程），静态背景自动作为无动画回退；
+   层级在 .zyyo-filter 之下，保证背景模糊仍然生效 */
+@keyframes bgKenburns {
+    from {
+        transform: scale(1) translate(0, 0);
+    }
+
+    to {
+        transform: scale(1.1) translate(-1.5%, -1%);
+    }
+}
+
+body::before {
+    content: "";
+    position: fixed;
+    inset: -4%;
+    z-index: -100000001;
+    background: var(--main_bg_color);
+    background-size: cover;
+    background-position: center;
+    animation: bgKenburns 70s ease-in-out infinite alternate;
+}
+
+#bg-particles {
+    opacity: 0;
+    transition: opacity 1.5s ease;
+}
+
+#bg-particles.on {
+    opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    body::before {
+        animation: none;
+    }
+
+    #bg-particles {
+        display: none;
+    }
+}
