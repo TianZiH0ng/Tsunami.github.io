@@ -544,7 +544,7 @@ body {
     transform: rotate(40deg);
 }
 
-.projectItem:hover h1 {
+.projectItem:hover h2 {
     font-size: 18px;
 }
 
@@ -555,7 +555,7 @@ body {
 }
 
 
-.projectItemLeft h1 {
+.projectItemLeft h2 {
     font-weight: normal;
     font-size: 16px;
     margin: 0px;
@@ -701,12 +701,12 @@ footer {
         font-size: 13px;
     }
 
-    .projectItemLeft h1 {
+    .projectItemLeft h2 {
 
         font-size: 18px;
     }
 
-    .projectItem:hover h1 {
+    .projectItem:hover h2 {
 
         font-size: 20px;
 
